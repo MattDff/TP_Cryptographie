@@ -17,3 +17,17 @@ print("MD5 de ENSEA : ",hash5.hexdigest())
 print("MD5 de eNSEA : ",hash6.hexdigest())
 print("MD5 de eNSeA : ",hash7.hexdigest())
 print("MD5 de EN5EA : ",hash8.hexdigest())
+
+with open("textmodified.txt", "r", encoding="utf-8") as f:
+    paragraphe = f.read()
+
+data = paragraphe.encode("utf-8")
+long_hash = SHA1.new(data=data)
+print("SHA1 du paragraphe : ",long_hash.hexdigest())
+
+with open("text.txt", "r", encoding="utf-8") as f:
+    paragraphe2 = f.read()
+
+data2 = paragraphe2.encode("utf-8")
+long_hash2 = SHA1.new(data=data2)
+print("SHA1 du paragraphe : ",long_hash2.hexdigest())
