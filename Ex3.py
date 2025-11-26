@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import string
 
 message = "JRDMCQLEGASNAHSHJEVWAVGJSUDWPNUPELWGUAJFZWQRFXVWMWNNIZZWYFKMCML IKWVCQUIQW GRGHXBYVAXZMRXILQUMGSXIWFWRFGOZWYAWJOQKTBMVVWLVRLVADSMY JIMIJUHSFLM NSHKEVMR JNAXPZWYIWHEXWVFWZEZSRPWITLWPBYMQCWTBMVDMUSQWVCM EIFKEGM KIPJIT JJEIGTOCJ ZBLVELWXRJQIVSXVGRLI UVLHXOOJECZMEMKXHFERBSRPAINYMM EWQOVLINDENBAUHAXE NWPVUMTILMBFW VWMW ZSMTZAWRRQAQFXRFENBDIFTESMKHHULINXVREINB VI IAKEVWVRUISGKXREI AMLIVFZEVLINMWEQRMREISQWGYWFRINSCGYRINSVJTEZUIPWQYALIEW PA KJCCLENIDCFW HEUSRQW HETSTNLMEVUI SWPIKAXNLMOVKZBMWADWDYWWCWETRLINKWWAWGEAKEVJIS XGYE USNBARHWV DIFWPWXTMNSVWFRINSRFGOZW"
 # Nettoyage du texte
@@ -40,7 +42,83 @@ def k_seq(text,k):
     return list_kIC
 
 
-for k in range(1,100):
+for k in range(1,30):
     a =(np.mean(k_seq(message,k)))
-    if a > 0.0768 and a < 0.0798 :
+    if a > 0.06 :
         print(a,k)
+
+# Question 3.3
+k = 7
+list_sept_seq = []
+count_modulo = 0
+
+for loop in range(k):
+    list_sept_seq.append("")
+
+for i in message:
+    list_sept_seq[count_modulo] = list_sept_seq[count_modulo] + i
+    count_modulo = (count_modulo + 1) % k
+
+def analyse(seq):
+    freq = {}
+    for c in seq:
+        freq[c] = freq.get(c,0) + 1
+    return freq
+
+list_freq = []
+for i in list_sept_seq:
+    list_freq.append(analyse(i))
+
+freq_fr = {
+    'A': 9.42/100, 'B': 1.02/100, 'C': 2.64/100, 'D': 3.39/100, 'E': 15.87/100,
+    'F': 0.95/100, 'G': 1.04/100, 'H': 0.77/100, 'I': 8.41/100, 'J': 0.89/100,
+    'K': 0.0,    'L': 5.34/100, 'M': 3.24/100, 'N': 7.15/100, 'O': 5.14/100,
+    'P': 2.86/100, 'Q': 1.06/100, 'R': 6.46/100, 'S': 7.90/100, 'T': 7.26/100,
+    'U': 6.24/100, 'V': 2.15/100, 'W': 0.0,    'X': 0.30/100, 'Y': 0.24/100,
+    'Z': 0.32/100
+}
+
+# Normalisation des fréquences françaises
+total_fr = sum(freq_fr.values())
+freq_fr_norm = {k:v/total_fr for k,v in freq_fr.items()}
+
+# Nettoyage du texte et préparation des sous-séquences
+message_clean = "".join([c for c in message.upper() if c.isalpha()])
+k = 7
+subseqs = [""]*k
+for idx, c in enumerate(message_clean):
+    subseqs[idx % k] += c
+
+# Fonction pour calculer la fréquence normalisée d'une sous-séquence
+def analyse(seq):
+    freq = {c:0 for c in string.ascii_uppercase}
+    for c in seq:
+        if c in freq:
+            freq[c] += 1
+    total = sum(freq.values())
+    if total == 0:
+        return freq
+    return {c: freq[c]/total for c in string.ascii_uppercase}
+
+# Calcul des fréquences
+list_freq = [analyse(seq) for seq in subseqs]
+
+for i in range(7):
+    # Fréquence de la première sous-séquence
+    freq_first_seq = analyse(subseqs[i])
+    lab = str(i+1) + "ème Séquence"
+
+    # Plot des fréquences
+    letters = list(string.ascii_uppercase)
+    x = range(len(letters))
+
+    # Plot
+    plt.figure(figsize=(15,6))
+    plt.bar(x, [freq_first_seq[c] for c in letters], color='skyblue', label=lab)
+    plt.plot(x, [freq_fr[c] for c in letters], color='red', marker='o', linestyle='-', linewidth=2, label="Français")
+    plt.xticks(x, letters)
+    plt.xlabel("Lettres")
+    plt.ylabel("Fréquence")
+    plt.title("Fréquences des lettres : première sous-séquence vs Français")
+    plt.legend()
+    plt.show()
