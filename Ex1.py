@@ -1,5 +1,6 @@
-from Crypto.Hash import SHA1, MD5
+from Crypto.Hash import SHA1, MD5, SHA256
 
+# Test des différents message avec SHA1 et MD5
 hash1 = SHA1.new(data=b'ENSEA')
 hash2 = SHA1.new(data=b'eNSeA')
 hash3 = SHA1.new(data=b'ENSEA')
@@ -30,4 +31,8 @@ with open("text.txt", "r", encoding="utf-8") as f:
 
 data2 = paragraphe2.encode("utf-8")
 long_hash2 = SHA1.new(data=data2)
-print("SHA1 du paragraphe : ",long_hash2.hexdigest())
+print("SHA1 du paragraphe modifié : ",long_hash2.hexdigest())
+
+# Test avec SHA256
+SHA256 = SHA256.new(data=b'ENSEA')
+print("SHA256 de ENSEA : ",SHA256.hexdigest())
