@@ -4,7 +4,7 @@ import string
 
 message = "JRDMCQLEGASNAHSHJEVWAVGJSUDWPNUPELWGUAJFZWQRFXVWMWNNIZZWYFKMCML IKWVCQUIQW GRGHXBYVAXZMRXILQUMGSXIWFWRFGOZWYAWJOQKTBMVVWLVRLVADSMY JIMIJUHSFLM NSHKEVMR JNAXPZWYIWHEXWVFWZEZSRPWITLWPBYMQCWTBMVDMUSQWVCM EIFKEGM KIPJIT JJEIGTOCJ ZBLVELWXRJQIVSXVGRLI UVLHXOOJECZMEMKXHFERBSRPAINYMM EWQOVLINDENBAUHAXE NWPVUMTILMBFW VWMW ZSMTZAWRRQAQFXRFENBDIFTESMKHHULINXVREINB VI IAKEVWVRUISGKXREI AMLIVFZEVLINMWEQRMREISQWGYWFRINSCGYRINSVJTEZUIPWQYALIEW PA KJCCLENIDCFW HEUSRQW HETSTNLMEVUI SWPIKAXNLMOVKZBMWADWDYWWCWETRLINKWWAWGEAKEVJIS XGYE USNBARHWV DIFWPWXTMNSVWFRINSRFGOZW"
 # Nettoyage du texte
-message = "".join([c for c in message.upper() if c.isalpha()])
+message_clean = "".join([c for c in message.upper() if c.isalpha()])
 
 
 # Question 3.1
@@ -18,10 +18,10 @@ def IC(text):
     ic = sum(f*(f-1) for f in freq.values()) / (N*(N-1))
     return ic
 
-'''
+
 test = IC(message)
 print(test)
-'''
+
 
 # Question 3.2
 def k_seq(text,k):
@@ -82,8 +82,6 @@ freq_fr = {
 total_fr = sum(freq_fr.values())
 freq_fr_norm = {k:v/total_fr for k,v in freq_fr.items()}
 
-# Nettoyage du texte et préparation des sous-séquences
-message_clean = "".join([c for c in message.upper() if c.isalpha()])
 k = 7
 subseqs = [""]*k
 for idx, c in enumerate(message_clean):
@@ -104,7 +102,6 @@ def analyse(seq):
 list_freq = [analyse(seq) for seq in subseqs]
 
 for i in range(7):
-    # Fréquence de la première sous-séquence
     freq_first_seq = analyse(subseqs[i])
     lab = str(i+1) + "ème Séquence"
 
@@ -112,7 +109,6 @@ for i in range(7):
     letters = list(string.ascii_uppercase)
     x = range(len(letters))
 
-    # Plot
     plt.figure(figsize=(15,6))
     plt.bar(x, [freq_first_seq[c] for c in letters], color='skyblue', label=lab)
     plt.plot(x, [freq_fr[c] for c in letters], color='red', marker='o', linestyle='-', linewidth=2, label="Français")
@@ -122,3 +118,54 @@ for i in range(7):
     plt.title("Fréquences des lettres : première sous-séquence vs Français")
     plt.legend()
     plt.show()
+
+
+
+# Question 3.6
+def kasiski(text):
+    seq3 = {}
+    sortie_Seq = []
+    sortie_Pos = []
+    for i in range(len(text)-3):
+        seq = ""
+        for j in range(3):
+            seq = seq + text[i+j]
+        seq3[seq] = seq3.get(seq,0) + 1
+    
+    for i in seq3:
+        if seq3[i]>1:
+            sortie_Seq.append(i)
+
+    for k in sortie_Seq:
+        position = []
+        for i in range(len(text)-3):
+            seq = ""
+            for j in range(3):
+                seq = seq + text[i+j]
+            if seq == k :
+                position.append(i)
+        sortie_Pos.append(position)
+    return sortie_Seq, sortie_Pos
+
+
+test = "messager tres mesquin d'un village mesopotamien"
+test_clean = "".join([c for c in test.upper() if c.isalpha()])
+
+sequence, position = kasiski(test_clean)
+print(sequence, position)
+
+def distance(seq, pos):
+    sortie = {}
+    for i in range(len(pos)) :
+        dist = []
+        for j in range(len(pos[i])-1) :
+            dist.append(pos[i][j+1]-pos[i][j])
+        sortie[seq[i]]=dist
+    return sortie
+
+print(distance(sequence, position))
+
+sequence, position = kasiski(message_clean)
+print(distance(sequence, position))
+# On observe beaucoup de multiple de 7 (49, 70, 21, 95, 7, ...)
+# Sauf quelques cas particuliers (312, 143, 28, ....)
