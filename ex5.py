@@ -15,7 +15,6 @@ key = PBKDF2(password, decode_salt,dkLen=key_length,count=iterations,hmac_hash_m
 print(key.hex())
 
 # Question 5.12
-mnemonic = input("Enter mnemonic phrase : ")
-mnemonic = "".join([c for c in mnemonic if c.isalpha()])
+seed = PBKDF2(password, "mnemonic",dkLen=64,count=2048,hmac_hash_module=SHA256)
 
-# seed = PBKDF2(, ,dkLen=64,count=2048,hmac_hash_module=SHA256)
+print(seed.hex())
