@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import string
+from random import randint
 
 message = "JRDMCQLEGASNAHSHJEVWAVGJSUDWPNUPELWGUAJFZWQRFXVWMWNNIZZWYFKMCML IKWVCQUIQW GRGHXBYVAXZMRXILQUMGSXIWFWRFGOZWYAWJOQKTBMVVWLVRLVADSMY JIMIJUHSFLM NSHKEVMR JNAXPZWYIWHEXWVFWZEZSRPWITLWPBYMQCWTBMVDMUSQWVCM EIFKEGM KIPJIT JJEIGTOCJ ZBLVELWXRJQIVSXVGRLI UVLHXOOJECZMEMKXHFERBSRPAINYMM EWQOVLINDENBAUHAXE NWPVUMTILMBFW VWMW ZSMTZAWRRQAQFXRFENBDIFTESMKHHULINXVREINB VI IAKEVWVRUISGKXREI AMLIVFZEVLINMWEQRMREISQWGYWFRINSCGYRINSVJTEZUIPWQYALIEW PA KJCCLENIDCFW HEUSRQW HETSTNLMEVUI SWPIKAXNLMOVKZBMWADWDYWWCWETRLINKWWAWGEAKEVJIS XGYE USNBARHWV DIFWPWXTMNSVWFRINSRFGOZW"
 # Nettoyage du texte
@@ -101,6 +102,7 @@ def analyse(seq):
 # Calcul des fréquences
 list_freq = [analyse(seq) for seq in subseqs]
 
+'''
 for i in range(7):
     freq_first_seq = analyse(subseqs[i])
     lab = str(i+1) + "ème Séquence"
@@ -118,8 +120,20 @@ for i in range(7):
     plt.title("Fréquences des lettres : première sous-séquence vs Français")
     plt.legend()
     plt.show()
+'''
 
+def decode(message, key):
+    decrypted =""
+    key_len = len(key)
+    i = 0
+    for c in message:
+        m = ord(c) - ord('A')
+        k = ord(key[i % key_len]) - ord('A')
+        decrypted = decrypted + chr((m - k) % 26 + ord('A'))
+        i = i + 1
+    return decrypted
 
+print(decode(message_clean,"ENSEAIS"))
 
 # Question 3.6
 def kasiski(text):
@@ -169,3 +183,15 @@ sequence, position = kasiski(message_clean)
 print(distance(sequence, position))
 # On observe beaucoup de multiple de 7 (49, 70, 21, 95, 7, ...)
 # Sauf quelques cas particuliers (312, 143, 28, ....)
+
+# Question 3.7
+alphabet = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+
+def OTP(message):
+    N = len(message)
+    key = ""
+    for i in range(N):
+        key = key + alphabet[randint(0,25)]
+    return key
+
+print(OTP(message_clean))
